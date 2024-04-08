@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -50,18 +51,40 @@ namespace UTT_Verifier
             string[] QuartzFiles = Directory.GetFileSystemEntries(edtQuartzPath.Text, "*.tif", SearchOption.TopDirectoryOnly);
             string[] VShapeFiles = Directory.GetFileSystemEntries(edtVShapePath.Text, "*.tif", SearchOption.TopDirectoryOnly);
 
+            pbDates.Maximum = QuartzFiles.Length + VShapeFiles.Length;
+            lblCount.Text = "Finished: 0/" + pbDates.Maximum;
+
             foreach (string QuartzFile in QuartzFiles)
             {
                 FileInfo QuartzFileInfo = new FileInfo(QuartzFile);
                 string QuartzDate = GetDate(QuartzFileInfo);
-                lbQuartzDates.Items.Add(QuartzDate);
+                if (QuartzDate != null)
+                {
+                    lbQuartzDates.Items.Add(QuartzDate);
+                }
+                else
+                {
+                    lbQuartzDates.Items.Add("No date");
+                }
+                pbDates.PerformStep();
+                lblCount.Text = "Finished: " + pbDates.Value + "/" + pbDates.Maximum;
             }
 
             foreach (string VShapeFile in VShapeFiles)
             {
                 FileInfo VShapeFileInfo = new FileInfo(VShapeFile);
                 string VShapeDate = GetDate(VShapeFileInfo);
-                lbVShapeDates.Items.Add(VShapeDate);
+                //lbVShapeDates.Items.Add(VShapeDate);
+                if (VShapeDate != null)
+                {
+                    lbVShapeDates.Items.Add(VShapeDate);
+                }
+                else
+                {
+                    lbVShapeDates.Items.Add("No date");
+                }
+                pbDates.PerformStep();
+                lblCount.Text = "Finished: " + pbDates.Value + "/" + pbDates.Maximum;
             }
         }
 
