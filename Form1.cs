@@ -44,23 +44,32 @@ namespace UTT_Verifier
 
         private void btnGetDates_Click(object sender, EventArgs e)
         {
-            if ((edtQuartzPath.Text == "") || (edtVShapePath.Text == ""))
+            /*if ((edtQuartzPath.Text == "") || (edtVShapePath.Text == ""))
             {
                 MessageBox.Show("Quartz or V-Shape Path not set.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            }*/
             string[] QuartzFiles = Directory.GetFileSystemEntries(edtQuartzPath.Text, "*.tif", SearchOption.TopDirectoryOnly);
             string[] VShapeFiles = Directory.GetFileSystemEntries(edtVShapePath.Text, "*.tif", SearchOption.TopDirectoryOnly);
 
             pbDates.Maximum = QuartzFiles.Length + VShapeFiles.Length;
             lblCount.Text = "Finished: 0/" + pbDates.Maximum;
 
+            lbQuartzDates.Items.Clear();
+            lbVShapeDates.Items.Clear();
+
             foreach (string QuartzFile in QuartzFiles)
             {
                 FileInfo QuartzFileInfo = new FileInfo(QuartzFile);
-                string QuartzDate = GetDate(QuartzFileInfo);
+                string QuartzDate = QuartzFileInfo.LastWriteTime.Date.ToString();
+                QuartzDate = QuartzDate.Remove(10, 9);
                 if (QuartzDate != null)
                 {
-                    lbQuartzDates.Items.Add(QuartzDate);
+
+                    int index = lbQuartzDates.FindStringExact(QuartzDate);
+                    if (index == ListBox.NoMatches)
+                    {
+                        lbQuartzDates.Items.Add(QuartzDate);
+                    }
                 }
                 else
                 {
@@ -73,11 +82,15 @@ namespace UTT_Verifier
             foreach (string VShapeFile in VShapeFiles)
             {
                 FileInfo VShapeFileInfo = new FileInfo(VShapeFile);
-                string VShapeDate = GetDate(VShapeFileInfo);
-                //lbVShapeDates.Items.Add(VShapeDate);
+                string VShapeDate = VShapeFileInfo.LastWriteTime.Date.ToString();
+                VShapeDate = VShapeDate.Remove(10, 9);
                 if (VShapeDate != null)
                 {
-                    lbVShapeDates.Items.Add(VShapeDate);
+                    int index = lbVShapeDates.FindStringExact(VShapeDate);
+                    if (index == ListBox.NoMatches)
+                    {
+                        lbVShapeDates.Items.Add(VShapeDate);
+                    }
                 }
                 else
                 {
